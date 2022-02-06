@@ -2,7 +2,6 @@ package com.example.tmdb_themoviedatabase.main.backend
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.tmdb_themoviedatabase.main.backend.data.MovieItem
 import com.example.tmdb_themoviedatabase.main.backend.data.MovieList
@@ -14,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,6 +23,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
+
 
 class BackendModel : LifecycleOwner{
     private var lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
@@ -52,7 +53,7 @@ class BackendModel : LifecycleOwner{
     init {
         lifecycleRegistry.currentState = Lifecycle.State.STARTED
 
-        val httpClient = OkHttpClient.Builder()
+        val httpClient = RetrofitUrlManager.getInstance().with(OkHttpClient.Builder())
         httpClient.readTimeout(10000, TimeUnit.MILLISECONDS)
         httpClient.connectTimeout(10000, TimeUnit.MILLISECONDS)
 
@@ -60,7 +61,7 @@ class BackendModel : LifecycleOwner{
             httpClient.addInterceptor(object : Interceptor {
                 override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
                     val request = chain.request().newBuilder()
-                            .build()
+                        .build()
                     return chain.proceed(request)
                 }
 
@@ -76,13 +77,14 @@ class BackendModel : LifecycleOwner{
                 .serializeNulls()
                 .create()
 
-        Log.d(TAG,"request generated")
+        Log.d(TAG, "request generated")
 
         builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(EnumAsOrdinalToStringConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
                 .baseUrl(Constants.baseURL)
                 .client(httpClient.build())
+
         retrofit = builder.build()
 
         movieListApiService = retrofit.create(MovieListApiService::class.java)
@@ -140,24 +142,38 @@ class BackendModel : LifecycleOwner{
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { result ->
-                            Log.d(TAG,"backend movie list" + result.toString())
-                            onGetMoviesList?.invoke(result, true, "")
-                        },
-                        { error ->
-                            Log.d(TAG,"backend movie list error ${error.message}")
+                    { result ->
+                        //Log.d(TAG, "backend movie list" + result.toString())
+                        onGetMoviesList?.invoke(result, true, "")
+                    },
+                    { error ->
+                        Log.d(TAG, "backend movie list error ${error.message}")
 
-                            onGetMoviesList?.invoke(MovieList(0, emptyList()), false, error.message ?: "")
+                        onGetMoviesList?.invoke(
+                            MovieList(0, emptyList()),
+                            false,
+                            error.message ?: ""
+                        )
 
-                        }
+                    }
                 )
     }
+
+
 
     fun updateMovieList(onUpdated: ((successful: Boolean) -> Unit)? = null) {
 
         fetchMovies { movieList, successful, _ ->
             if (successful) {
-                Log.d(TAG, "movies : ${movieList.toString()}")
+
+                movieList.items.forEach { it->
+                    it.poster_path = Constants.basePosterURL + it.poster_path
+                }
+
+                _movies.value = movieList.items
+
+                Log.d(TAG, "final data list : ${_movies.value.toString()}")
+
             }
             else {
 
@@ -167,9 +183,11 @@ class BackendModel : LifecycleOwner{
         //}
     }
 
+
+
     fun syncData()
     {
-        Log.d(TAG,"syncData")
+        Log.d(TAG, "syncData")
         updateMovieList()
     }
 }

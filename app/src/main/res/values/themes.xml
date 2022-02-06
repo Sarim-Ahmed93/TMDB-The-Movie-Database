@@ -7,7 +7,7 @@
         <item name="colorAccent">@color/colorPrimaryLight</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="textInputStyle">@style/MyTextInputLayoutStyle</item>
-        <item name="android:actionMenuTextColor">@color/colorTableFreeGradientA</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
     </style>
    <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="android:windowNoTitle">true</item>

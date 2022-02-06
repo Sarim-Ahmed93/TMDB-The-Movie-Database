@@ -6,6 +6,7 @@ object Keys {
     {
         var API_KEY = "api_key"
         var LIST_ID = "list_id"
+        var BASE_URL = "base_url"
     }
     object JsonKeys
     {

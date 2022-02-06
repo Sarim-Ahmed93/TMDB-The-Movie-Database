@@ -24,6 +24,7 @@ class TMDBAndroidApp : Application() {
 
     }
 
+
     companion object
     {
         @get:Synchronized var instance: TMDBAndroidApp? = null
