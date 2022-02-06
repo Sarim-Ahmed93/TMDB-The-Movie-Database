@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#89001B</color>
+    <color name="colorOnPrimary">#ffffff</color>
+    <color name="colorPrimaryLight">#A61330</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#C6314E</color>
+
+    <color name="colorFabTint">#00891B</color>
+    <color name="colorDisabledFabTint">#7F7E7E7E</color>
+    <color name="colorDisabledFabText">#7F3C3C3C</color>
+    <color name="colorIcons">#000000</color>
+    <color name="colorTransparentBackground">#D9FFFFFF</color>
+    <color name="colorTableText">#ffffff</color>
+    <color name="shadowColor">#000000</color>
+    <color name="colorPositive">#4CAF50</color>
+    <color name="colorWarn">@android:color/holo_orange_light</color>
+    <color name="colorNegative">#E91E63</color>
+    <color name="colorTableFreeGradientA">#00891B</color>
+    <color name="colorTableFreeGradientB">#00A630</color>
+    <color name="colorTableOccupiedGradientA">@color/colorPrimaryLight</color>
+    <color name="colorTableOccupiedGradientB">@color/colorPrimary</color>
+    <color name="selectorGradientA">#86CF5F</color>
+    <color name="selectorGradientB">#58C65C</color>
+    <color name="printedBackgroundGradientA">#BFD7D7D7</color>
+    <color name="printedBackgroundGradientB">#8CD7D7D7</color>
+    <color name="toastBackgroundColor">#75000000</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="darkCharcoal">#414141</color>
+</resources>

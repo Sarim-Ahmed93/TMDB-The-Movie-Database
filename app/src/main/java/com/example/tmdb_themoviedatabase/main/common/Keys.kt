@@ -1,0 +1,15 @@
+package com.example.tmdb_themoviedatabase.main.common
+
+object Keys {
+
+    object ApiUrlKeys
+    {
+        var API_KEY = "api_key"
+        var LIST_ID = "list_id"
+    }
+    object JsonKeys
+    {
+
+    }
+
+}
