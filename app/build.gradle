@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
+
 }
 
 android {
@@ -19,7 +21,9 @@ android {
             resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
         }
     }
-
+    buildFeatures {
+        viewBinding true
+    }
     buildTypes {
         release {
             minifyEnabled false

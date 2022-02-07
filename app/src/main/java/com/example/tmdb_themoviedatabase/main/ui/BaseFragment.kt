@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.tmdb_themoviedatabase.R
 import com.example.tmdb_themoviedatabase.main.activities.MainActivity
 
-class BaseFragment : Fragment(){
+open class BaseFragment : Fragment(){
 
     // set this to another value in init of descendant
     var softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
@@ -25,8 +25,8 @@ class BaseFragment : Fragment(){
                 pBar.visibility = View.GONE
                 contentView.visibility = View.VISIBLE
             } else {
-                pBar.visibility = View.VISIBLE
-                contentView.visibility = View.GONE
+                pBar.visibility = View.GONE
+                contentView.visibility = View.VISIBLE
             }
         }
 
