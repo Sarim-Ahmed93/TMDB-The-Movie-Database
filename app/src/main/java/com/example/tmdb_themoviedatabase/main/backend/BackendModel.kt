@@ -168,7 +168,7 @@ class BackendModel : LifecycleOwner{
 
                 movieList.items.forEach { it->
                     it.poster_path = Constants.basePosterURL + it.poster_path
-                    it.backdrop_path + Constants.baseBackdropURL + it.backdrop_path
+                    it.backdrop_path = Constants.baseBackdropURL + it.backdrop_path
                 }
 
                 _movies.value = movieList.items

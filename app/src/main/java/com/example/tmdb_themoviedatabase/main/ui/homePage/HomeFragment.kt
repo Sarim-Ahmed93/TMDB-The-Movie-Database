@@ -137,13 +137,12 @@ class HomeFragment : BaseFragment() {
             try {
 
                 Glide.with(requireActivity())
-                    .load(url).diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop()
+                    .load(url).diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(holder.imageview)
                 holder.textViewName!!.setText(item?.title)
                 holder.textViewName!!.setBackgroundColor(colors.random())
 
                 convertView.setOnClickListener {
-                    Toast.makeText(requireContext(), "view click ${item.id}", Toast.LENGTH_SHORT).show()
 
                     findNavController().doNavigate(HomeFragmentDirections.actionHomeFragmentToDetailFragment2(item.id))
                 }

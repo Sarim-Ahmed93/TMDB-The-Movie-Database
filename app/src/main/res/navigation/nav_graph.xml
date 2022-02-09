@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
-
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.tmdb_themoviedatabase.main.ui.homePage.HomeFragment"
@@ -13,17 +12,12 @@
         <action
             android:id="@+id/action_homeFragment_to_detailFragment2"
             app:destination="@id/detailFragment">
-
         </action>
-
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.tmdb_themoviedatabase.main.ui.detailPage.DetailFragment"
-        android:label="detail_fragment"
         tools:layout="@layout/detail_fragment" >
-
-
         <argument
             android:name="id"
             app:argType="integer" />

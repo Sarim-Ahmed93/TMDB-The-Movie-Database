@@ -6,11 +6,14 @@
     android:layout_height="match_parent"
     android:layout_margin="5dp">
 
+
+
     <com.example.tmdb_themoviedatabase.main.common.SquaredImageView
         android:id="@+id/posterView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toTopOf="@+id/textViewName"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,16 +21,19 @@
     <TextView
         android:id="@+id/textViewName"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/cardview_dark_background"
-        android:textColor="@color/white"
-        android:fontFamily="sans-serif"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textAlignment="center"
-        android:lines="1"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
         android:ems="1"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:fontFamily="sans-serif"
+        android:lines="1"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/posterView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
