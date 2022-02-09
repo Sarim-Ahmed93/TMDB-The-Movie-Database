@@ -9,17 +9,7 @@
         <item name="textInputStyle">@style/MyTextInputLayoutStyle</item>
         <item name="android:actionMenuTextColor">@color/black</item>
     </style>
-   <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@android:color/background_light</item>
-        <item name="textInputStyle">@style/MyTextInputLayoutStyle</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
-    </style>
+
 
     <style name="MyTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
         <item name="boxCornerRadiusBottomEnd">0dp</item>

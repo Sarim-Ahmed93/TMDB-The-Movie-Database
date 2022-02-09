@@ -6,9 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.example.tmdb_themoviedatabase.R
+import com.example.tmdb_themoviedatabase.main.ui.BaseFragment
+import kotlinx.android.synthetic.main.app_bar_layout.*
 
-class DetailFragment : Fragment() {
+
+class DetailFragment : BaseFragment() {
+    private val args : DetailFragmentArgs by navArgs()
+    private val detailViewModel: DetailViewModel by navGraphViewModels(R.id.nav_graph)
 
     companion object {
         fun newInstance() = DetailFragment()
@@ -20,12 +28,19 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.detail_fragment, container, false)
-    }
+        return super.onCreateView(inflater, container, savedInstanceState).let {
+            contentView.addView(inflater.inflate(R.layout.home_fragment, container, false))
+            ready = true
+            it
+
+        }    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+
+        //Toast.makeText(requireContext(), "id received : ${args.id}", Toast.LENGTH_SHORT).show()
+
+
         // TODO: Use the ViewModel
     }
 

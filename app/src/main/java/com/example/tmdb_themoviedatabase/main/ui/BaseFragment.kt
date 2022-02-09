@@ -25,7 +25,7 @@ open class BaseFragment : Fragment(){
                 pBar.visibility = View.GONE
                 contentView.visibility = View.VISIBLE
             } else {
-                pBar.visibility = View.GONE
+                pBar.visibility = View.VISIBLE
                 contentView.visibility = View.VISIBLE
             }
         }

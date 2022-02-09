@@ -14,8 +14,9 @@
         tools:context=".MainActivity">
 
         <include
-        android:id="@+id/include"
-        layout="@layout/app_bar_layout" />
+            android:id="@+id/include"
+            layout="@layout/app_bar_layout" />
+
 
         <fragment
             android:id="@+id/navHostFragment"

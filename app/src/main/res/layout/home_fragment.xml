@@ -6,26 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".main.ui.homePage.HomeFragment">
 
+
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
+        android:id="@+id/movieSearchView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/border_bottom"
+        app:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryHint="Search..."/>
+
+    <ListView
+        android:id="@+id/listviewSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movieSearchView"
+        app:layout_constraintTop_toBottomOf="@+id/movieSearchView" />
 
     <GridView
         android:id="@+id/movieGrid"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:numColumns="auto_fit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        android:numColumns="auto_fit"
-
-    />
+        app:layout_constraintTop_toBottomOf="@+id/listviewSearch" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
