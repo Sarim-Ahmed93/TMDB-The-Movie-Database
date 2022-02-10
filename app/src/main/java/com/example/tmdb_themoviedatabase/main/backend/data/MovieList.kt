@@ -2,12 +2,11 @@ package com.example.tmdb_themoviedatabase.main.backend.data
 
 import java.lang.StringBuilder
 
-data class MovieList( var id: Int, var items : List<MovieItem> )
+data class MovieList(var results : List<MovieItem> )
 {
     constructor(otherMovieList : MovieList) : this
     (
-        id =  otherMovieList.id,
-        items = otherMovieList.items
+        results = otherMovieList.results
     )
 }
 

@@ -10,5 +10,6 @@ object Constants {
     var baseBackdropURL = "https://image.tmdb.org/t/p/w780"
     var youtubeVideoURL = "https://www.youtube.com/watch?v="
     var youtubeThumbnailURL = "https://img.youtube.com/vi/"
+    var profileImagePath = "https://image.tmdb.org/t/p/w500/"
 
 }

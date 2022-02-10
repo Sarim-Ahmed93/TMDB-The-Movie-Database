@@ -3,8 +3,10 @@ package com.example.tmdb_themoviedatabase.main.backend
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.tmdb_themoviedatabase.main.backend.data.Genre
 import com.example.tmdb_themoviedatabase.main.backend.data.MovieItem
 import com.example.tmdb_themoviedatabase.main.backend.data.MovieList
+import com.example.tmdb_themoviedatabase.main.backend.rest.GenreApiService
 import com.example.tmdb_themoviedatabase.main.backend.rest.MovieListApiService
 import com.example.tmdb_themoviedatabase.main.common.Constants
 import com.example.tmdb_themoviedatabase.main.common.EnumAsOrdinalToStringConverterFactory
@@ -18,6 +20,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,13 +36,17 @@ class BackendModel : LifecycleOwner{
     private var eventListeners = mutableListOf<WeakReference<BackendEventListener>>()
     private var retrofitCalls = mutableMapOf<Long, Call<*>>() // holds references to retrofit calls
     private lateinit var movieListApiService: MovieListApiService
+    private lateinit var genreApiService : GenreApiService
+
     private val TAG = "BackendModel"
 
     val movies: LiveData<List<MovieItem>>
         get() = _movies
+    val genres: LiveData<List<Genre>>
+        get() = _genres
 
     private var _movies = MutableLiveData<List<MovieItem>>(listOf())
-
+    private var _genres = MutableLiveData<List<Genre>>(listOf())
 
     interface BackendEventListener {
         fun onStartLoadingMenu() {}
@@ -88,6 +96,7 @@ class BackendModel : LifecycleOwner{
         retrofit = builder.build()
 
         movieListApiService = retrofit.create(MovieListApiService::class.java)
+        genreApiService = retrofit.create(GenreApiService::class.java)
 
 
         syncData()
@@ -138,7 +147,7 @@ class BackendModel : LifecycleOwner{
      */
     @SuppressLint("CheckResult")
     private fun fetchMovies(onGetMoviesList: ((movieList: MovieList, successful: Boolean, errorString: String) -> Unit)? = null) {
-        movieListApiService.getList()
+        movieListApiService.getList(1,Constants.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -150,7 +159,7 @@ class BackendModel : LifecycleOwner{
                         Log.d(TAG, "backend movie list error ${error.message}")
 
                         onGetMoviesList?.invoke(
-                            MovieList(0, emptyList()),
+                            MovieList(emptyList()),
                             false,
                             error.message ?: ""
                         )
@@ -160,18 +169,43 @@ class BackendModel : LifecycleOwner{
     }
 
 
+    /**
+     * Fetches list of Genres.
+     */
+    @SuppressLint("CheckResult")
+    private fun fetchGenres(onGenressFetched: ((genresList: List<Genre>, successful: Boolean, errorString: String) -> Unit)? = null): AsyncBackendOperationHandle {
+
+        val call = genreApiService.all(Constants.API_KEY)
+        call.enqueue(object : Callback<List<Genre>> {
+            override fun onResponse(call: Call<List<Genre>>, response: Response<List<Genre>>) {
+                response.body().let { body ->
+                    Log.d(TAG, "${response.message()}")
+                    onGenressFetched?.invoke(body ?: emptyList(), response.isSuccessful, response.message())
+                }
+            }
+            override fun onFailure(call: Call<List<Genre>>, t: Throwable) {
+                if (call.isCanceled) {
+                    Log.d(TAG, "call canceled")
+                } else {
+                    onGenressFetched?.invoke(emptyList(), false, t.toString())
+                }
+            }
+        })
+
+        return addAsyncOperationCall(call)
+    }
 
     fun updateMovieList(onUpdated: ((successful: Boolean) -> Unit)? = null) {
 
         fetchMovies { movieList, successful, _ ->
             if (successful) {
 
-                movieList.items.forEach { it->
+                movieList.results.forEach { it->
                     it.poster_path = Constants.basePosterURL + it.poster_path
                     it.backdrop_path = Constants.baseBackdropURL + it.backdrop_path
                 }
 
-                _movies.value = movieList.items
+                _movies.value = movieList.results
 
                 Log.d(TAG, "final data list : ${_movies.value.toString()}")
 
@@ -184,11 +218,23 @@ class BackendModel : LifecycleOwner{
         //}
     }
 
+    fun updateGenreList(onUpdated: ((successful: Boolean) -> Unit)? = null) {
 
+        fetchGenres { genresList, successful, errorString ->
+            if (successful) {
+                _genres.value = genresList
+                Log.d(TAG, "final data list : ${_movies.value.toString()}")
+            }
+            else { }
+            onUpdated?.invoke(successful)
+        }
+        //}
+    }
 
     fun syncData()
     {
         Log.d(TAG, "syncData")
         updateMovieList()
+        updateGenreList()
     }
 }
