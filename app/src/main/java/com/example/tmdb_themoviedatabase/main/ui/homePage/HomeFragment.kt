@@ -144,7 +144,7 @@ class HomeFragment : BaseFragment() {
 
                 convertView.setOnClickListener {
 
-                    findNavController().doNavigate(HomeFragmentDirections.actionHomeFragmentToDetailFragment2(item.id))
+                    findNavController().doNavigate(HomeFragmentDirections.actionHomeFragmentToDetailFragment2(item.id!!))
                 }
 
             } catch (e: Exception) {
@@ -220,7 +220,7 @@ class HomeFragment : BaseFragment() {
 
         init {
             arraylist = ArrayList<String>()
-            homeViewModel.movies.value?.forEach {it-> arraylist?.add(it.title) }
+            homeViewModel.movies.value?.forEach {it-> arraylist?.add(it.title!!) }
             mContext = context
             inflater = LayoutInflater.from(mContext)
         }
@@ -277,15 +277,15 @@ class HomeFragment : BaseFragment() {
             Log.d(TAG,"in filter function")
 
             if (charText.length == 0) {
-                homeViewModel.movies.value!!?.forEach {it-> arraylist?.add(it.title) }
+                homeViewModel.movies.value!!?.forEach {it-> arraylist?.add(it.title!!) }
                 Log.d(TAG,"filtered name : ${arraylist.toString()}")
                 gridViewAdapter.filter("")
 
             } else {
                 if(homeViewModel.movies.value!!!!.isNullOrEmpty()) {Log.d(TAG,"movie list is empty or null")}
                 for (movie in homeViewModel.movies.value!!) {
-                    if (movie.title.toLowerCase(Locale.getDefault()).contains(charText)) {
-                        arraylist!!.add(movie.title)
+                    if (movie.title?.toLowerCase(Locale.getDefault())!!.contains(charText)) {
+                        arraylist!!.add(movie.title!!)
                         Log.d(TAG,"filtered name : ${movie.title}")
                     }
                 }

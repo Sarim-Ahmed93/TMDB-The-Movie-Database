@@ -46,7 +46,7 @@ class DetailFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
             movieItem = detailViewModel.getMovieDetail(args.id)
-            setTitle(movieItem.title)
+            setTitle(movieItem.title!!)
             Log.d(TAG, "in grid view adapter")
             Log.d(TAG,"id received : ${args.id}")
 

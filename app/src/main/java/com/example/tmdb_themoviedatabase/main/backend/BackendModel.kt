@@ -3,14 +3,15 @@ package com.example.tmdb_themoviedatabase.main.backend
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.tmdb_themoviedatabase.main.backend.data.Cast
 import com.example.tmdb_themoviedatabase.main.backend.data.Genre
 import com.example.tmdb_themoviedatabase.main.backend.data.MovieItem
 import com.example.tmdb_themoviedatabase.main.backend.data.MovieList
+import com.example.tmdb_themoviedatabase.main.backend.rest.CastApiService
 import com.example.tmdb_themoviedatabase.main.backend.rest.GenreApiService
 import com.example.tmdb_themoviedatabase.main.backend.rest.MovieListApiService
 import com.example.tmdb_themoviedatabase.main.common.Constants
 import com.example.tmdb_themoviedatabase.main.common.EnumAsOrdinalToStringConverterFactory
-import com.example.tmdb_themoviedatabase.main.common.Keys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,6 +38,7 @@ class BackendModel : LifecycleOwner{
     private var retrofitCalls = mutableMapOf<Long, Call<*>>() // holds references to retrofit calls
     private lateinit var movieListApiService: MovieListApiService
     private lateinit var genreApiService : GenreApiService
+    private lateinit var castApiService : CastApiService
 
     private val TAG = "BackendModel"
 
@@ -44,9 +46,11 @@ class BackendModel : LifecycleOwner{
         get() = _movies
     val genres: LiveData<List<Genre>>
         get() = _genres
-
+    val cast: LiveData<List<Cast>>
+        get() = _cast
     private var _movies = MutableLiveData<List<MovieItem>>(listOf())
     private var _genres = MutableLiveData<List<Genre>>(listOf())
+    private var _cast = MutableLiveData<List<Cast>>(listOf())
 
     interface BackendEventListener {
         fun onStartLoadingMenu() {}
@@ -97,7 +101,7 @@ class BackendModel : LifecycleOwner{
 
         movieListApiService = retrofit.create(MovieListApiService::class.java)
         genreApiService = retrofit.create(GenreApiService::class.java)
-
+        castApiService = retrofit.create(CastApiService::class.java)
 
         syncData()
 
@@ -173,27 +177,55 @@ class BackendModel : LifecycleOwner{
      * Fetches list of Genres.
      */
     @SuppressLint("CheckResult")
-    private fun fetchGenres(onGenressFetched: ((genresList: List<Genre>, successful: Boolean, errorString: String) -> Unit)? = null): AsyncBackendOperationHandle {
+    private fun fetchGenres(onGenresFetched: ((genresList: List<Genre>, successful: Boolean, errorString: String) -> Unit)? = null): AsyncBackendOperationHandle {
 
         val call = genreApiService.all(Constants.API_KEY)
         call.enqueue(object : Callback<List<Genre>> {
             override fun onResponse(call: Call<List<Genre>>, response: Response<List<Genre>>) {
                 response.body().let { body ->
                     Log.d(TAG, "${response.message()}")
-                    onGenressFetched?.invoke(body ?: emptyList(), response.isSuccessful, response.message())
+                    onGenresFetched?.invoke(body ?: emptyList(), response.isSuccessful, response.message())
                 }
             }
             override fun onFailure(call: Call<List<Genre>>, t: Throwable) {
                 if (call.isCanceled) {
                     Log.d(TAG, "call canceled")
                 } else {
-                    onGenressFetched?.invoke(emptyList(), false, t.toString())
+                    onGenresFetched?.invoke(emptyList(), false, t.toString())
                 }
             }
         })
 
         return addAsyncOperationCall(call)
     }
+
+    /**
+     * Fetches list of Cast.
+     */
+    @SuppressLint("CheckResult")
+    private fun fetchCast(movie_id: Int, onCastFetched: ((castList: List<Cast>, successful: Boolean, errorString: String) -> Unit)? = null): AsyncBackendOperationHandle {
+
+        val call = castApiService.getCast(movie_id, Constants.API_KEY)
+        call.enqueue(object : Callback<List<Cast>> {
+            override fun onResponse(call: Call<List<Cast>>, response: Response<List<Cast>>) {
+                response.body().let { body ->
+                    Log.d(TAG, "${response.message()}")
+                    onCastFetched?.invoke(body ?: emptyList(), response.isSuccessful, response.message())
+                }
+            }
+            override fun onFailure(call: Call<List<Cast>>, t: Throwable) {
+                if (call.isCanceled) {
+                    Log.d(TAG, "call canceled")
+                } else {
+                    onCastFetched?.invoke(emptyList(), false, t.toString())
+                }
+            }
+
+        })
+
+        return addAsyncOperationCall(call)
+    }
+
 
     fun updateMovieList(onUpdated: ((successful: Boolean) -> Unit)? = null) {
 
@@ -229,6 +261,18 @@ class BackendModel : LifecycleOwner{
             onUpdated?.invoke(successful)
         }
         //}
+    }
+
+    fun getCastList(movie_id: Int,onUpdated: ((successful: Boolean) -> Unit)? = null)
+    {
+        fetchCast(movie_id) { castList, successful, errorString ->
+            if (successful) {
+                _cast.value = castList
+                Log.d(TAG, "final data list : ${_movies.value.toString()}")
+            }
+            else { }
+            onUpdated?.invoke(successful)
+        }
     }
 
     fun syncData()
