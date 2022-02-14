@@ -3,10 +3,7 @@ package com.example.tmdb_themoviedatabase.main.backend
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.tmdb_themoviedatabase.main.backend.data.Cast
-import com.example.tmdb_themoviedatabase.main.backend.data.Genre
-import com.example.tmdb_themoviedatabase.main.backend.data.MovieItem
-import com.example.tmdb_themoviedatabase.main.backend.data.MovieList
+import com.example.tmdb_themoviedatabase.main.backend.data.*
 import com.example.tmdb_themoviedatabase.main.backend.rest.CastApiService
 import com.example.tmdb_themoviedatabase.main.backend.rest.GenreApiService
 import com.example.tmdb_themoviedatabase.main.backend.rest.MovieListApiService
@@ -150,23 +147,19 @@ class BackendModel : LifecycleOwner{
      * Fetches list of movies.
      */
     @SuppressLint("CheckResult")
-    private fun fetchMovies(onGetMoviesList: ((movieList: MovieList, successful: Boolean, errorString: String) -> Unit)? = null) {
+    private fun fetchMovies(onGetMoviesList: ((movieList: MovieList, successful: Boolean) -> Unit)? = null) {
         movieListApiService.getList(1,Constants.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { result ->
                         //Log.d(TAG, "backend movie list" + result.toString())
-                        onGetMoviesList?.invoke(result, true, "")
+                        onGetMoviesList?.invoke(result, true)
                     },
                     { error ->
                         Log.d(TAG, "backend movie list error ${error.message}")
 
-                        onGetMoviesList?.invoke(
-                            MovieList(emptyList()),
-                            false,
-                            error.message ?: ""
-                        )
+                        onGetMoviesList?.invoke(MovieList(emptyList()), false, )
 
                     }
                 )
@@ -177,59 +170,51 @@ class BackendModel : LifecycleOwner{
      * Fetches list of Genres.
      */
     @SuppressLint("CheckResult")
-    private fun fetchGenres(onGenresFetched: ((genresList: List<Genre>, successful: Boolean, errorString: String) -> Unit)? = null): AsyncBackendOperationHandle {
+    private fun fetchGenres(onGetGenre: ((castList: GenreData, successful: Boolean) -> Unit)? = null) {
 
-        val call = genreApiService.all(Constants.API_KEY)
-        call.enqueue(object : Callback<List<Genre>> {
-            override fun onResponse(call: Call<List<Genre>>, response: Response<List<Genre>>) {
-                response.body().let { body ->
-                    Log.d(TAG, "${response.message()}")
-                    onGenresFetched?.invoke(body ?: emptyList(), response.isSuccessful, response.message())
-                }
-            }
-            override fun onFailure(call: Call<List<Genre>>, t: Throwable) {
-                if (call.isCanceled) {
-                    Log.d(TAG, "call canceled")
-                } else {
-                    onGenresFetched?.invoke(emptyList(), false, t.toString())
-                }
-            }
-        })
+        genreApiService.all(Constants.API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { result ->
+                            Log.d(TAG, "backend cast list" + result.toString())
+                            onGetGenre?.invoke(result, true)
+                        },
+                        { error ->
+                            Log.d(TAG, "backend cast list error ${error.message}")
 
-        return addAsyncOperationCall(call)
+                            onGetGenre?.invoke(GenreData( emptyList()), false)
+
+                        }
+                )
     }
 
     /**
      * Fetches list of Cast.
      */
     @SuppressLint("CheckResult")
-    private fun fetchCast(movie_id: Int, onCastFetched: ((castList: List<Cast>, successful: Boolean, errorString: String) -> Unit)? = null): AsyncBackendOperationHandle {
+    fun fetchCast(movie_id: Int, onGetCast: ((castList: Detail, successful: Boolean) -> Unit)? = null) {
+        castApiService.getCast(movie_id,Constants.API_KEY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { result ->
+                            Log.d(TAG, "backend cast list" + result.toString())
+                            onGetCast?.invoke(result, true)
+                        },
+                        { error ->
+                            Log.d(TAG, "backend cast list error ${error.message}")
 
-        val call = castApiService.getCast(movie_id, Constants.API_KEY)
-        call.enqueue(object : Callback<List<Cast>> {
-            override fun onResponse(call: Call<List<Cast>>, response: Response<List<Cast>>) {
-                response.body().let { body ->
-                    Log.d(TAG, "${response.message()}")
-                    onCastFetched?.invoke(body ?: emptyList(), response.isSuccessful, response.message())
-                }
-            }
-            override fun onFailure(call: Call<List<Cast>>, t: Throwable) {
-                if (call.isCanceled) {
-                    Log.d(TAG, "call canceled")
-                } else {
-                    onCastFetched?.invoke(emptyList(), false, t.toString())
-                }
-            }
+                            onGetCast?.invoke(Detail(0, emptyList()), false)
 
-        })
-
-        return addAsyncOperationCall(call)
+                        }
+                )
     }
 
 
     fun updateMovieList(onUpdated: ((successful: Boolean) -> Unit)? = null) {
 
-        fetchMovies { movieList, successful, _ ->
+        fetchMovies { movieList, successful ->
             if (successful) {
 
                 movieList.results.forEach { it->
@@ -252,10 +237,10 @@ class BackendModel : LifecycleOwner{
 
     fun updateGenreList(onUpdated: ((successful: Boolean) -> Unit)? = null) {
 
-        fetchGenres { genresList, successful, errorString ->
+        fetchGenres { genresList, successful->
             if (successful) {
-                _genres.value = genresList
-                Log.d(TAG, "final data list : ${_movies.value.toString()}")
+                _genres.value = genresList.genres
+                Log.d(TAG, "final genre list : ${_genres.value.toString()}")
             }
             else { }
             onUpdated?.invoke(successful)
@@ -263,21 +248,26 @@ class BackendModel : LifecycleOwner{
         //}
     }
 
-    fun getCastList(movie_id: Int,onUpdated: ((successful: Boolean) -> Unit)? = null)
+    /*fun getCastList(movie_id: Int,onUpdated: ((successful: Boolean) -> Unit)? = null) : List<Cast>
     {
-        fetchCast(movie_id) { castList, successful, errorString ->
+
+        fetchCast(movie_id) { castList, successful->
             if (successful) {
 
-                castList.forEach { it->
+                castList.cast.forEach { it->
                     it.profile_path = Constants.profileImagePath + it.profile_path
                 }
-                _cast.value = castList
-                Log.d(TAG, "final data list : ${_movies.value.toString()}")
+                _cast.value = castList.cast
+                Log.d(TAG, "final cast list : ${_cast.value.toString()}")
+
             }
-            else { }
+            else {
+            }
             onUpdated?.invoke(successful)
         }
-    }
+        return _cast.value!!
+
+    }*/
 
     fun syncData()
     {

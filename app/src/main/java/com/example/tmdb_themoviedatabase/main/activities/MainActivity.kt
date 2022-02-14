@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.tmdb_themoviedatabase.R
-import com.example.tmdb_themoviedatabase.main.backend.AppModel
 
 class MainActivity : AppCompatActivity() {
     private var _optionsMenu: Menu? = null

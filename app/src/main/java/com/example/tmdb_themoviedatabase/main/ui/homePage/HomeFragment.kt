@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
@@ -277,17 +276,20 @@ class HomeFragment : BaseFragment() {
             Log.d(TAG,"in filter function")
 
             if (charText.length == 0) {
-                homeViewModel.movies.value!!?.forEach {it-> arraylist?.add(it.title!!) }
-                Log.d(TAG,"filtered name : ${arraylist.toString()}")
-                gridViewAdapter.filter("")
+                if(!homeViewModel.movies.value.isNullOrEmpty()) {
+                    homeViewModel.movies.value!!?.forEach { it -> arraylist?.add(it.title!!) }
+                    Log.d(TAG, "filtered name : ${arraylist.toString()}")
+                    gridViewAdapter.filter("")
+                }
 
             } else {
-                if(homeViewModel.movies.value!!!!.isNullOrEmpty()) {Log.d(TAG,"movie list is empty or null")}
+                if(!homeViewModel.movies.value.isNullOrEmpty()) {
                 for (movie in homeViewModel.movies.value!!) {
                     if (movie.title?.toLowerCase(Locale.getDefault())!!.contains(charText)) {
                         arraylist!!.add(movie.title!!)
                         Log.d(TAG,"filtered name : ${movie.title}")
                     }
+                }
                 }
                 Log.d(TAG,"filtered name : no  movie")
 

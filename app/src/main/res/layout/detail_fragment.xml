@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbarSize="10dp"
+    android:scrollbarStyle="insideOverlay"
+    android:scrollbarThumbVertical="@color/darkCharcoal"
+    android:scrollbars="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -55,7 +64,12 @@
         android:layout_marginEnd="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarSize="10dp"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbarThumbVertical="@color/darkCharcoal"
+        android:scrollbars="horizontal"/>
 
     <TextView
         android:id="@+id/textViewDetails"
@@ -76,9 +90,12 @@
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         android:text="@string/cast"
+        android:textStyle="italic"
+        android:fontFamily="sans-serif-condensed-medium"
         android:textAlignment="center"
-        android:textColor="@color/black"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewCast"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDetails" />
@@ -89,6 +106,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarSize="10dp"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbarThumbVertical="@color/darkCharcoal"
+        android:scrollbars="horizontal"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,3 +119,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

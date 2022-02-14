@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 
 
-internal class SquaredImageView : ImageView {
+class SquaredImageView : ImageView {
     private var mContext: Context? = null
 
     constructor(context: Context) : super(context) {

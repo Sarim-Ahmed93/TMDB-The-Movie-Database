@@ -5,6 +5,7 @@
     <color name="colorPrimaryLight">#A61330</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#C6314E</color>
+    <color name="lightgrey">#D3D3D3</color>
 
     <color name="colorFabTint">#00891B</color>
     <color name="colorDisabledFabTint">#7F7E7E7E</color>
