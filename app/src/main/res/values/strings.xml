@@ -8,4 +8,7 @@
     <string name="popularity">Popularity:</string>
     <string name="rating">Rating</string>
     <string name="language">Language</string>
+    <string name="cast">Cast</string>
+    <string name="as">As</string>
+
 </resources>

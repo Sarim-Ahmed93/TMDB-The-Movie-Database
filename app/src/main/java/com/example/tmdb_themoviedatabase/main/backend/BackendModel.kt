@@ -267,6 +267,10 @@ class BackendModel : LifecycleOwner{
     {
         fetchCast(movie_id) { castList, successful, errorString ->
             if (successful) {
+
+                castList.forEach { it->
+                    it.profile_path = Constants.profileImagePath + it.profile_path
+                }
                 _cast.value = castList
                 Log.d(TAG, "final data list : ${_movies.value.toString()}")
             }
